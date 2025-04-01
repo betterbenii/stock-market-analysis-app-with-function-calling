@@ -8,9 +8,12 @@
 
 - **get_historical_price(symbol, start_date, end_date)**: This function fetches the historical stock prices for a given symbol from a specified start date to an end date. The returned data is a DataFrame with the date and closing price of the stock.
 
-- **plot_price_over_time(historical_price_dfs)**: This function takes a list of DataFrames (each containing historical price data for a stock) and plots the prices over time using Plotly. The plot is displayed in the Streamlit app.
+- **get_technical_indicators(symbol, period='6mo')**: This function calculates basic technical indicators for a stock including:
+  - SMA (Simple Moving Average) for 20 and 50 days
+  - RSI (Relative Strength Index)
+  - MACD (Moving Average Convergence Divergence)
 
-- **call_functions(llm_with_tools, user_prompt)**: This function takes the user's question, invokes the appropriate tool (either get_stock_info or get_historical_price), and generates a response. If the user asked for historical prices, it also calls plot_price_over_time to generate a plot.
+- **plot_price_over_time(historical_price_dfs)**: This function takes a list of DataFrames (each containing historical price data for a stock) and plots the prices over time using Plotly. The plot is displayed in the Streamlit app.
 
 ## Function Calling
 
