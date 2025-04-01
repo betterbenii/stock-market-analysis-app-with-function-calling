@@ -1,6 +1,6 @@
-# Stock Market Analysis with Llama 3 Function Calling
+# Stock Market Analysis with Function Calling
 
-Welcome to the Stock Market Analyst! This is a Streamlit web application that leverages the yfinance API to provide insights into stocks and their prices. The application uses the Llama 3 model on Groq in conjunction with Langchain to call functions based on the user prompt.
+ This is a Streamlit web application that leverages the yfinance API to provide insights into stocks and their prices. The application uses the Llama 3 model on Groq in conjunction with Langchain to call functions based on the user prompt.
 
 ## Key Functions
 
@@ -16,14 +16,3 @@ Welcome to the Stock Market Analyst! This is a Streamlit web application that le
 
 The function calling in this application is handled by the Groq API, abstracted with Langchain. When the user asks a question, the application invokes the appropriate tool with parameters based on the user's question. The tool's output is then used to generate a response.
 
-## Usage
-
-1. Clone the repository to your local machine.
-
-2. Install the required dependencies listed in the **requirements.txt** file.
-
-3. Run the application using Streamlit with the command `streamlit run app.py`.
-
-4. In the application, enter your question about a stock in the text input field. For example, "What is the current price of Google stock?" or "Show me the historical prices of Amazon and Tesla over the past year.".
-
-5. If you want to provide additional context for the language model, you can do so in the sidebar.
