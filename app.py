@@ -159,7 +159,19 @@ def main():
     # Display the title and introduction of the application
     st.title("Analyze Live Stock Market with an LLM")
     multiline_text = """
-    Try to ask it "What is the current price of Meta stock?" or "Show me the historical prices of Apple vs Microsoft stock over the past 6 months.".
+    You can ask questions about stocks like:
+    
+    • "What is the current price of Meta stock?"
+    
+    • "Show me the historical prices of Apple vs Microsoft stock over the past 6 months."
+
+    OR Technical Stock Indicators like:
+    
+    • "What are the technical indicators for Tesla?"
+    
+    • "Show me the RSI and MACD for Tesla stock"
+    
+    • "What's the 20-day moving average for Microsoft?"
     """
 
     st.markdown(multiline_text, unsafe_allow_html=True)
