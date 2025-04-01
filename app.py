@@ -40,6 +40,41 @@ def get_historical_price(symbol, start_date, end_date):
     hist[symbol] = hist['Close']
     return hist[['Date', symbol]]
 
+@tool
+def get_technical_indicators(symbol: str, period: str = '6mo') -> dict:
+    """
+    Calculate basic technical indicators for a stock
+    - SMA (Simple Moving Average) for 20 and 50 days
+    - RSI (Relative Strength Index)
+    - MACD (Moving Average Convergence Divergence)
+    """
+    data = yf.Ticker(symbol).history(period=period)
+    
+    # Calculate SMAs
+    data['SMA20'] = data['Close'].rolling(window=20).mean()
+    data['SMA50'] = data['Close'].rolling(window=50).mean()
+    
+    # Calculate RSI
+    delta = data['Close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    data['RSI'] = 100 - (100 / (1 + rs))
+    
+    # Calculate MACD
+    exp1 = data['Close'].ewm(span=12, adjust=False).mean()
+    exp2 = data['Close'].ewm(span=26, adjust=False).mean()
+    data['MACD'] = exp1 - exp2
+    data['Signal_Line'] = data['MACD'].ewm(span=9, adjust=False).mean()
+    
+    return {
+        'sma20': data['SMA20'].iloc[-1],
+        'sma50': data['SMA50'].iloc[-1],
+        'rsi': data['RSI'].iloc[-1],
+        'macd': data['MACD'].iloc[-1],
+        'signal_line': data['Signal_Line'].iloc[-1]
+    }
+
 def plot_price_over_time(historical_price_dfs):
 
     full_df = pd.DataFrame(columns = ['Date'])
@@ -91,7 +126,12 @@ def call_functions(llm_with_tools, user_prompt):
     historical_price_dfs = []
     symbols = []
     for tool_call in ai_msg.tool_calls:
-        selected_tool = {"get_stock_info": get_stock_info, "get_historical_price": get_historical_price}[tool_call["name"].lower()]
+        selected_tool = {
+            "get_stock_info": get_stock_info, 
+            "get_historical_price": get_historical_price,
+            "get_technical_indicators": get_technical_indicators
+        }[tool_call["name"].lower()]
+        
         tool_output = selected_tool.invoke(tool_call["args"])
         if tool_call['name'] == 'get_historical_price':
             historical_price_dfs.append(tool_output)
@@ -101,7 +141,6 @@ def call_functions(llm_with_tools, user_prompt):
     
     if len(historical_price_dfs) > 0:
         plot_price_over_time(historical_price_dfs)
-    
         symbols = ' and '.join(symbols)
         messages.append(ToolMessage('Tell the user that a historical stock price chart for {symbols} been generated.'.format(symbols=symbols), tool_call_id=0))
 
@@ -113,7 +152,7 @@ def main():
 
     llm = ChatGroq(groq_api_key = "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",model = 'llama3-70b-8192')
     
-    tools = [get_stock_info, get_historical_price]
+    tools = [get_stock_info, get_historical_price, get_technical_indicators]  # Added get_technical_indicators
     llm_with_tools = llm.bind_tools(tools)
 
   
